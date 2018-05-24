@@ -9,24 +9,55 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import net.rithms.riot.api.ApiConfig;
+import net.rithms.riot.api.RiotApi;
+import net.rithms.riot.api.RiotApiException;
+import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import net.rithms.riot.constant.Platform;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    TextView txtView;
+    EditText summoner;
+    Spinner region;
     Button button;
+    String apiToken;
+
+
+    public void readToken() throws IOException  {
+        String file = "C:/Users/attac/AndroidStudioProjects/RealLeague/APITOKEN.txt";
+        BufferedReader bf = new BufferedReader(new FileReader(file));
+        String token = "";
+        try {
+            token = bf.readLine();
+            bf.close();
+            apiToken = token;
+        }
+        catch (Exception e) {
+            System.out.println("Not read.");
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        txtView = (TextView) findViewById(R.id.textView);
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtView.setText("All done");
-            }
+        String file = "C:/Users/attac/AndroidStudioProjects/RealLeague/APITOKEN.txt";
+        String token = "";
+        try {
+            BufferedReader bf = new BufferedReader(new FileReader(file));
+            token = bf.readLine();
+            bf.close();
+            apiToken = token;
+        }
+        catch (Exception e) {
+            System.out.println("Not read.");
+        }
 
-        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
