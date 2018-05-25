@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String file = "C:/Users/attac/AndroidStudioProjects/RealLeague/APITOKEN.txt";
+        String file = "APITOKEN.txt";
         String token = "";
         try {
             BufferedReader bf = new BufferedReader(new FileReader(file));
@@ -57,19 +58,16 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e) {
             System.out.println("Not read.");
         }
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        region = (Spinner) findViewById(R.id.spinner);
+        summoner = (EditText) findViewById(R.id.editText);
+        ArrayAdapter<String> adapter =  new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.regions));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        region.setAdapter(adapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
     }
 
     @Override
