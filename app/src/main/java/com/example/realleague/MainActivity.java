@@ -13,13 +13,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import net.rithms.riot.api.ApiConfig;
-import net.rithms.riot.api.RiotApi;
+
+import com.merakianalytics.orianna.Orianna;
+import com.merakianalytics.orianna.types.common.Region;
+import com.merakianalytics.orianna.types.core.summoner.Summoner;
+
+
 import net.rithms.riot.api.RiotApiException;
-import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
-import net.rithms.riot.constant.Platform;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -27,45 +30,70 @@ public class MainActivity extends AppCompatActivity {
     EditText summoner;
     Spinner region;
     Button button;
-    String apiToken;
+    TextView txt;
 
 
-    public void readToken() throws IOException  {
-        String file = "C:/Users/attac/AndroidStudioProjects/RealLeague/APITOKEN.txt";
-        BufferedReader bf = new BufferedReader(new FileReader(file));
+    public String readToken()  {
+        String fileString = "C:/Users/attac/AndroidStudioProjects/RealLeague/APITOKEN.txt";
         String token = "";
         try {
-            token = bf.readLine();
-            bf.close();
-            apiToken = token;
+            File file = new File(fileString);
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            StringBuffer stringBuffer = new StringBuffer();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+                stringBuffer.append("\n");
+            }
+            fileReader.close();
+            token += stringBuffer.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {
-            System.out.println("Not read.");
-        }
+        return token;
     }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String file = "APITOKEN.txt";
-        String token = "";
-        try {
-            BufferedReader bf = new BufferedReader(new FileReader(file));
-            token = bf.readLine();
-            bf.close();
-            apiToken = token;
-        }
-        catch (Exception e) {
-            System.out.println("Not read.");
-        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         region = (Spinner) findViewById(R.id.spinner);
         summoner = (EditText) findViewById(R.id.editText);
+        button = (Button) findViewById(R.id.button3);
+        txt = (TextView) findViewById(R.id.textView);
+
         ArrayAdapter<String> adapter =  new ArrayAdapter<String>(MainActivity.this,
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.regions));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         region.setAdapter(adapter);
+
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Orianna.setRiotAPIKey(API.TOKEN);
+                String summonerName = summoner.getText().toString();
+                int optionPicked = region.getSelectedItemPosition();
+                if (optionPicked == 0 || summonerName == "") {
+                    txt.setText("Type in your summoner name and/or pick a region.");
+                }
+                else {
+                    if (optionPicked == 1) {
+                        Summoner summ = Summoner.named(summonerName).withRegion(Region.NORTH_AMERICA).get();
+                        txt.setText("");
+                    }
+                }
+
+            }
+        });
+
+
 
 
     }
