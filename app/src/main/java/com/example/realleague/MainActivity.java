@@ -1,5 +1,6 @@
 package com.example.realleague;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,46 +15,31 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.merakianalytics.orianna.Orianna;
-import com.merakianalytics.orianna.types.common.Region;
-import com.merakianalytics.orianna.types.core.summoner.Summoner;
-
-
-import net.rithms.riot.api.RiotApiException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import net.rithms.riot.api.ApiConfig;
+import net.rithms.riot.api.RiotApi;
+import net.rithms.riot.api.RiotApiException;
+import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import net.rithms.riot.constant.Platform;
+
+
+
+import java.util.Map;
+
+
 
 public class MainActivity extends AppCompatActivity {
     EditText summoner;
     Spinner region;
     Button button;
     TextView txt;
+    String summonerName;
+    ApiConfig config = new ApiConfig().setKey(API.TOKEN);
+    RiotApi riot = new RiotApi(config);
 
-
-    public String readToken()  {
-        String fileString = "C:/Users/attac/AndroidStudioProjects/RealLeague/APITOKEN.txt";
-        String token = "";
-        try {
-            File file = new File(fileString);
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            StringBuffer stringBuffer = new StringBuffer();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuffer.append(line);
-                stringBuffer.append("\n");
-            }
-            fileReader.close();
-            token += stringBuffer.toString();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return token;
-    }
 
 
     @Override
@@ -61,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         region = (Spinner) findViewById(R.id.spinner);
         summoner = (EditText) findViewById(R.id.editText);
         button = (Button) findViewById(R.id.button3);
         txt = (TextView) findViewById(R.id.textView);
+
 
         ArrayAdapter<String> adapter =  new ArrayAdapter<String>(MainActivity.this,
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.regions));
@@ -77,16 +65,17 @@ public class MainActivity extends AppCompatActivity {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Orianna.setRiotAPIKey(API.TOKEN);
-                String summonerName = summoner.getText().toString();
+
+                summonerName = summoner.getText().toString();
                 int optionPicked = region.getSelectedItemPosition();
+                Summoner thisSum = null;
                 if (optionPicked == 0 || summonerName == "") {
                     txt.setText("Type in your summoner name and/or pick a region.");
                 }
                 else {
                     if (optionPicked == 1) {
-                        Summoner summ = Summoner.named(summonerName).withRegion(Region.NORTH_AMERICA).get();
-                        txt.setText("");
+                        FetchSummonerTask f = new FetchSummonerTask();
+                        f.execute(summonerName);
                     }
                 }
 
@@ -118,5 +107,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public class FetchSummonerTask extends AsyncTask<String, Void, Summoner> {
+
+        @Override
+        protected Summoner doInBackground(String... params) {
+            try {
+                Summoner thisSum = riot.getSummonerByName(Platform.NA, params[0]);
+                return thisSum;
+            } catch (RiotApiException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Summoner result) {
+            txt.setText("" + result.getId());
+        }
+
+
     }
 }
