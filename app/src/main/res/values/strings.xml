@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">RealLeague</string>
     <string name="action_settings">Settings</string>
-    <string-array name = "regions">
+    <string-array name="regions">
         <item>Region</item>
         <item>North America</item>
         <item>Korea</item>

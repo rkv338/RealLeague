@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                summonerName = summoner.getText().toString();
+                /*summonerName = summoner.getText().toString();
                 int optionPicked = region.getSelectedItemPosition();
                 Summoner thisSum = null;
                 if (optionPicked == 0 || summonerName == "") {
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         FetchSummonerTask f = new FetchSummonerTask();
                         f.execute(summonerName);
                     }
-                }
+                }*/
 
             }
         });
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchSummonerTask extends AsyncTask<String, Void, Summoner> {
+    /*public class FetchSummonerTask extends AsyncTask<String, Void, Summoner> {
 
         @Override
         protected Summoner doInBackground(String... params) {
@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Summoner result) {
-            txt.setText("" + result.getId());
+            txt.setText("Summoner Id: " + result.getId());
         }
 
 
-    }
+    }*/
 }
