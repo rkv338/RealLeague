@@ -32,14 +32,14 @@ public class GetStats extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_get_stats);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
         region = (Spinner) findViewById(R.id.spinner2);
         summoner = (EditText) findViewById(R.id.editText2);
-        button = (Button) findViewById(R.id.button3);
+        button = (Button) findViewById(R.id.button);
         txt = (TextView) findViewById(R.id.textView);
 
 
@@ -87,6 +87,7 @@ public class GetStats extends AppCompatActivity {
         protected void onPostExecute(Summoner result) {
             String sumStats = "";
             sumStats += result.getName() + "\n" + "Summoner Level: " + result.getSummonerLevel();
+            txt.setText(sumStats);
         }
     }
 }
