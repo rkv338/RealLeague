@@ -1,5 +1,6 @@
 package com.example.realleague;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this, GetStats.class));
                 /*summonerName = summoner.getText().toString();
                 int optionPicked = region.getSelectedItemPosition();
                 Summoner thisSum = null;
