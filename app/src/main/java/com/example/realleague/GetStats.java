@@ -37,8 +37,8 @@ public class GetStats extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        region = (Spinner) findViewById(R.id.spinner);
-        summoner = (EditText) findViewById(R.id.editText);
+        region = (Spinner) findViewById(R.id.spinner2);
+        summoner = (EditText) findViewById(R.id.editText2);
         button = (Button) findViewById(R.id.button3);
         txt = (TextView) findViewById(R.id.textView);
 
@@ -68,10 +68,6 @@ public class GetStats extends AppCompatActivity {
 
             }
         });
-
-
-
-
     }
     public class FetchSummonerTask extends AsyncTask<String, Void, Summoner> {
 
@@ -89,10 +85,9 @@ public class GetStats extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Summoner result) {
-            txt.setText("Summoner Id: " + result.getId());
+            String sumStats = "";
+            sumStats += result.getName() + "\n" + "Summoner Level: " + result.getSummonerLevel();
         }
-
-
     }
 }
 

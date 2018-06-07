@@ -33,53 +33,27 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
-    EditText summoner;
-    Spinner region;
-    Button button;
-    TextView txt;
-    String summonerName;
-    ApiConfig config = new ApiConfig().setKey(API.TOKEN);
-    RiotApi riot = new RiotApi(config);
-
-
+    Button sumStats;
+    Button recentMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        region = (Spinner) findViewById(R.id.spinner);
-        summoner = (EditText) findViewById(R.id.editText);
-        button = (Button) findViewById(R.id.button3);
-        txt = (TextView) findViewById(R.id.textView);
+        sumStats = (Button) findViewById(R.id.button3);
+        recentMatch = (Button) findViewById(R.id.button2);
 
-
-        ArrayAdapter<String> adapter =  new ArrayAdapter<String>(MainActivity.this,
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.regions));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        region.setAdapter(adapter);
-
-
-
-        button.setOnClickListener(new View.OnClickListener() {
+        sumStats.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, GetStats.class));
-                /*summonerName = summoner.getText().toString();
-                int optionPicked = region.getSelectedItemPosition();
-                Summoner thisSum = null;
-                if (optionPicked == 0 || summonerName == "") {
-                    txt.setText("Type in your summoner name and/or pick a region.");
-                }
-                else {
-                    if (optionPicked == 1) {
-                        FetchSummonerTask f = new FetchSummonerTask();
-                        f.execute(summonerName);
-                    }
-                }*/
-
+            }
+        });
+        recentMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View v) {
+                startActivity(new Intent(MainActivity.this, RecentMatches.class));
             }
         });
 
@@ -110,25 +84,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*public class FetchSummonerTask extends AsyncTask<String, Void, Summoner> {
 
-        @Override
-        protected Summoner doInBackground(String... params) {
-            try {
-                Summoner thisSum = riot.getSummonerByName(Platform.NA, params[0]);
-                return thisSum;
-            } catch (RiotApiException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Summoner result) {
-            txt.setText("Summoner Id: " + result.getId());
-        }
-
-
-    }*/
 }
