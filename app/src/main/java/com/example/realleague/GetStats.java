@@ -14,8 +14,13 @@ import android.widget.TextView;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
+import net.rithms.riot.api.endpoints.champion_mastery.methods.GetChampionMasteryScoresBySummoner;
+import net.rithms.riot.api.endpoints.league.dto.LeagueList;
+import net.rithms.riot.api.endpoints.league.methods.GetChallengerLeagueByQueue;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
+
+import java.util.List;
 
 public class GetStats extends AppCompatActivity {
 
@@ -26,6 +31,8 @@ public class GetStats extends AppCompatActivity {
     String summonerName;
     ApiConfig config = new ApiConfig().setKey(API.TOKEN);
     RiotApi riot = new RiotApi(config);
+    Platform pf;
+
 
 
 
@@ -41,6 +48,7 @@ public class GetStats extends AppCompatActivity {
         summoner = (EditText) findViewById(R.id.editText2);
         button = (Button) findViewById(R.id.button);
         txt = (TextView) findViewById(R.id.textView);
+
 
 
         ArrayAdapter<String> adapter =  new ArrayAdapter<String>(GetStats.this,
@@ -60,9 +68,18 @@ public class GetStats extends AppCompatActivity {
                     txt.setText("Type in your summoner name and/or pick a region.");
                 }
                 else {
+                    FetchSummonerTask f = new FetchSummonerTask();
                     if (optionPicked == 1) {
-                        FetchSummonerTask f = new FetchSummonerTask();
-                        f.execute(summonerName);
+                        f.execute(summonerName , "na");
+                        pf = Platform.NA;
+                    }
+                    else if (optionPicked == 2) {
+                        f.execute(summonerName , "kr");
+                        pf = Platform.KR;
+                    }
+                    else if (optionPicked == 3) {
+                        f.execute(summonerName , "euw");
+                        pf = Platform.EUW;
                     }
                 }
 
@@ -74,21 +91,36 @@ public class GetStats extends AppCompatActivity {
         @Override
         protected Summoner doInBackground(String... params) {
             try {
-                Summoner thisSum = riot.getSummonerByName(Platform.NA, params[0]);
+                Summoner thisSum = riot.getSummonerByName(givePlatform(params[1]), params[0]);
                 return thisSum;
             } catch (RiotApiException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Summoner result) {
-            String sumStats = "";
-            sumStats += result.getName() + "\n" + "Summoner Level: " + result.getSummonerLevel();
-            txt.setText(sumStats);
+            try {
+                String sumStats = "";
+                sumStats += result.getName() + "\n" + "Summoner Level: " + result.getSummonerLevel();
+                List ll = riot.getLeagueBySummonerId(pf, result.getId());
+                String queue ="" +  ll.get(0).getClass();
+
+                txt.setText(queue);
+            } catch(RiotApiException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public Platform givePlatform (String region) {
+        switch (region) {
+            case "na" : return Platform.NA;
+            case "euw" : return Platform.EUW;
+            case "kr" : return Platform.KR;
+        }
+        return Platform.NA;
     }
 }
 
